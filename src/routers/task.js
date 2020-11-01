@@ -1,5 +1,6 @@
 const express = require('express');
 const Task = require('../models/task');
+const auth = require('../middleware/auth')
 const router = new express.Router();
 
 // Get all tasks
@@ -29,8 +30,12 @@ router.get('/tasks/:id', async (req, res) => {
 });
 
 // Save a Task to the DB
-router.post('/task', async (req, res) => {    
-    const task = new Task(req.body);
+router.post('/task', auth, async (req, res) => {
+    // Link task to user that created it
+    const task = new Task({
+        ...req.body,
+        owner: req.user._id
+    })
 
     try {
         await task.save();

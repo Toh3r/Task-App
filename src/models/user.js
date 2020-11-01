@@ -54,6 +54,13 @@ const userSchema = new mongoose.Schema({
     }]
 });
 
+// Create virtual property (relationship between user and tasks)
+userSchema.virtual('tasks', {
+    ref: 'Task',
+    localField: '_id',
+    foreignField: 'owner'
+});
+
 // Only return non-sensitive user data
 userSchema.methods.toJSON = function () {
     const user = this;
