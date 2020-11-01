@@ -61,24 +61,8 @@ router.get('/users/me', auth, async (req, res) => {
     res.send(req.user);
 });
 
-// Get a user using dynamic endpoint
-router.get('/users/:id', async (req, res) => {
-    // Contains route params
-    const _id = req.params.id;
-
-    try {
-        const user = await User.findById(_id);
-        if (!user) {
-            return res.status(404).send();
-        }
-        res.send(user);
-    } catch (e) {
-        res.status(500).send();
-    }
-});
-
 // Update user
-router.patch('/users/:id', async (req, res) => {
+router.patch('/users/me', auth,  async (req, res) => {
     const aUpdates = Object.keys(req.body);
     const aAllowedUpdates = ['name', 'email', 'password', 'age'];
     const isValid = aUpdates.every((update) => aAllowedUpdates.includes(update));
@@ -88,32 +72,20 @@ router.patch('/users/:id', async (req, res) => {
     }
 
     try {
-        const user = await User.findById(req.params.id);
-        aUpdates.forEach((update) => user[update] = req.body[update]);
-        await user.save();
-
-        // new: true = return updateed user
-        // runVaildators, run validators for updated user
-        // const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-
-        if (!user) {
-            return res.status(404).send();
-        }
-        res.send(user);
+        aUpdates.forEach((update) => req.user[update] = req.body[update]);
+        await req.user.save();
+        res.send(req.user);
     } catch (e) {
         res.status(400).send();
     }
 });
 
 // Remove User
-router.delete('/users/:id', async (req, res) => {
+router.delete('/users/me', auth, async (req, res) => {
     try {
-        const user = await User.findByIdAndDelete(req.params.id);
-
-        if (!user) {
-            return res.status(404).send();
-        }
-        res.send(user);
+        // Remove user from db
+        await req.user.remove();
+        res.send(req.user);
     } catch (e) {
         res.status(500).send();
     }

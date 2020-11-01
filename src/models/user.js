@@ -54,7 +54,18 @@ const userSchema = new mongoose.Schema({
     }]
 });
 
-// Create token for user
+// Only return non-sensitive user data
+userSchema.methods.toJSON = function () {
+    const user = this;
+    const userObject = user.toObject();
+
+    delete userObject.password;
+    delete userObject.tokens;
+
+    return userObject;
+}
+
+// Create token for user, methods = functions on user instance
 userSchema.methods.generateAuthToken = async function () {
     const user = this;
     const token = jwt.sign({ _id: user._id.toString() }, 'myToken'); // Create token
@@ -65,7 +76,7 @@ userSchema.methods.generateAuthToken = async function () {
     return token;
 }
 
-// Check login details of user
+// Check login details of user, statics = function on User model
 userSchema.statics.findByCredentials = async (email, password) => {
     const user = await User.findOne({ email });
 
