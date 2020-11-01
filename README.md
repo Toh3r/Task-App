@@ -6,3 +6,4 @@ Using
  - Express
  - Express Router
  - Mongoose
+ - Bcrypt Hashing

@@ -1,6 +1,29 @@
 const express = require('express');
+const { update } = require('../models/user');
 const User = require('../models/user');
 const router = new express.Router();
+
+// Create New User
+router.post('/user', async (req, res) => {    
+    const user = new User(req.body);
+
+    try {
+        await user.save();
+        res.status(201).send(user);
+    } catch (e) {
+        res.status(400).send(e);
+    }
+});
+
+// Login a user
+router.post('/users/login', async (req, res) => {
+    try {
+        const user = await User.findByCredentials(req.body.email, req.body.password);
+        res.send(user);
+    } catch (e) {
+        res.status(400).send();
+    }
+});
 
 // Get all users
 router.get('/users', async (req, res) => {
@@ -28,18 +51,6 @@ router.get('/users/:id', async (req, res) => {
     }
 });
 
-// Save a User to the DB
-router.post('/user', async (req, res) => {    
-    const user = new User(req.body);
-
-    try {
-        await user.save();
-        res.status(201).send(user);
-    } catch (e) {
-        res.status(400).send(e);
-    }
-});
-
 // Update user
 router.patch('/users/:id', async (req, res) => {
     const aUpdates = Object.keys(req.body);
@@ -51,9 +62,14 @@ router.patch('/users/:id', async (req, res) => {
     }
 
     try {
+        const user = await User.findById(req.params.id);
+        aUpdates.forEach((update) => user[update] = req.body[update]);
+        await user.save();
+
         // new: true = return updateed user
         // runVaildators, run validators for updated user
-        const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        // const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+
         if (!user) {
             return res.status(404).send();
         }

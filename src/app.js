@@ -15,7 +15,6 @@ app.use(express.json()); // Auto parse incoming JSON into an object
 app.use(userRouter);
 app.use(taskRouter);
 
-
 // Listen on port whatever
 app.listen(port, () => {
     console.log(`Port is up on ${port}...`);
