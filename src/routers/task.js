@@ -5,11 +5,18 @@ const router = new express.Router();
 
 // Get all tasks
 router.get('/tasks', auth, async (req, res) => {
-    
-    // filter tasks by completed
     const match = {}
+    const sort = {};
+
+    // filter tasks by completed
     if (req.query.completed) {
         match.completed = req.query.completed === 'true';
+    }
+
+    // Sort data using query params
+    if (req.query.sortBy) {
+        const parts = req.query.sortBy.split(':');
+        sort[parts[0]] = parts[1] === 'desc' ? -1 : 1;
     }
 
     try {
@@ -18,7 +25,12 @@ router.get('/tasks', auth, async (req, res) => {
         // Filter returned tasks
         await req.user.populate({
             path: 'tasks',
-            match
+            match,
+            options: {
+                limit: parseInt(req.query.limit),
+                skip:  parseInt(req.query.skip),
+                sort
+            }
         }).execPopulate();
         res.send(req.user.tasks);
     } catch (e) {
