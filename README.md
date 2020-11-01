@@ -5,5 +5,7 @@ Task app from https://www.udemy.com/course/the-complete-nodejs-developer-course-
 Using
  - Express
  - Express Router
+ - Rest API's
  - Mongoose
- - Bcrypt Hashing
+ - Authentication (Bcrypt Hashing)
+ - Json Web Tokens
