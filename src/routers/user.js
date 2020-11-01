@@ -1,6 +1,7 @@
 const express = require('express');
 const { update } = require('../models/user');
 const User = require('../models/user');
+const auth = require('../middleware/auth')
 const router = new express.Router();
 
 // Create New User
@@ -29,14 +30,9 @@ router.post('/users/login', async (req, res) => {
     }
 });
 
-// Get all users
-router.get('/users', async (req, res) => {
-    try {
-        const users = await User.find({});
-        res.send(users);
-    } catch (e) {
-        res.status(500).send();
-    }
+// Return own users profile
+router.get('/users/me', auth, async (req, res) => {
+    res.send(req.user);
 });
 
 // Get a user using dynamic endpoint
