@@ -5,9 +5,21 @@ const router = new express.Router();
 
 // Get all tasks
 router.get('/tasks', auth, async (req, res) => {
+    
+    // filter tasks by completed
+    const match = {}
+    if (req.query.completed) {
+        match.completed = req.query.completed === 'true';
+    }
+
     try {
         // const tasks = await Task.find({ owner: req.user._id });
-        await req.user.populate('tasks').execPopulate();
+
+        // Filter returned tasks
+        await req.user.populate({
+            path: 'tasks',
+            match
+        }).execPopulate();
         res.send(req.user.tasks);
     } catch (e) {
         res.status(500).send();
