@@ -8,7 +8,7 @@ const taskRouter = require('./routers/task');
 
 // Configure express
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 app.use(express.json()); // Auto parse incoming JSON into an object
 
