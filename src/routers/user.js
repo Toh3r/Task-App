@@ -92,9 +92,19 @@ router.delete('/users/me', auth, async (req, res) => {
     }
 });
 
-// Set uploaded image folder
+// Configure Multer
 const upload = multer({
-    dest: 'avatars'
+    dest: 'avatars',
+    limits: {
+        fileSize: 1000000
+    },
+    fileFilter(req, file, cb) {
+        if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+            return cb(new Error('Please Upload an image'));
+        }
+
+        cb(undefined, true);
+    }
 })
 
 // Upload User Profile image
