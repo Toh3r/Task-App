@@ -9,3 +9,4 @@ Using
  - Mongoose
  - Authentication (Bcrypt Hashing)
  - Json Web Tokens
+ - Multer (File Uploads)
