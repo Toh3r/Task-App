@@ -10,4 +10,5 @@ Using
  - Authentication (Bcrypt Hashing)
  - Json Web Tokens
  - Multer (File Uploads)
- - Emails using SendGrid 
+ - Emails using SendGrid
+ - Testing using Jest
