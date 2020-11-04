@@ -11,4 +11,4 @@ Using
  - Json Web Tokens
  - Multer (File Uploads)
  - Emails using SendGrid
- - Testing using Jest
+ - Testing using Jest and supertest
